@@ -15,9 +15,17 @@ knowledge/
   ├─ 04_viral_checklist.md       ← upload as Project knowledge
   ├─ 05_caption_hashtag_guide.md ← upload as Project knowledge
   ├─ carousel_engine.py          ← the renderer (host on GitHub — see Step 3)
-  └─ sample_carousel.py          ← worked example (optional, for reference)
+  ├─ sample_ai_workflow.py       ← AI/dev-hack demo (new slide types) — for reference
+  └─ sample_carousel.py          ← code before/after demo — for reference
 README_SETUP.md                  ← this file
 ```
+
+**Covers the whole niche, not just code:** AI tools, dev hacks/workflow, code, and tech. Slide types
+include `tool` (tool roundups), `prompt` (steal-my-prompts), `terminal` (CLI hacks), `stat` (big
+metrics), `compare` (A vs B), `steps`, `code` (before/after), `quote` (hot takes), and more — plus a
+signature **segmented progress rail** on every slide and opt-in font effects (gradient headlines,
+outlined stats, CRT scanline). The factory picks the format + slide mix dynamically per topic, and
+may ask you one quick question (or for a helper upload) when it sharpens the result.
 
 ---
 
@@ -85,7 +93,8 @@ Tweaks are cheap: "punchier hook", "swap slide 4", "make it 6 slides" → Claude
   ```bash
   pip install playwright pygments pillow
   playwright install chromium
-  python3 sample_carousel.py        # renders the shipped example into ./out
+  python3 sample_ai_workflow.py      # AI/dev-hack demo → ./out_ai  (shows the new slide types)
+  python3 sample_carousel.py         # code before/after demo → ./out
   ```
 - **Change the canvas to 1:1:** set `W, H = 1080, 1080` near the top of `carousel_engine.py`.
 
