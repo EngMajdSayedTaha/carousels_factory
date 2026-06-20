@@ -1,1 +1,0 @@
-# carousels_factory
