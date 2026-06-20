@@ -18,7 +18,8 @@ Requires (install once per sandbox):
 Fonts: ./fonts/SpaceGrotesk.ttf  +  ./fonts/JetBrainsMono.ttf
    (fetch from github.com/google/fonts if missing — see fetch_fonts())
 
-SLIDE TYPES: hook | text | code | list | statement | recap | cta
+SLIDE TYPES: hook | text | statement | quote | code | terminal | prompt
+             | list | steps | compare | tool | stat | recap | cta
 See the docstrings on each render_* function for the accepted fields.
 Inline markup inside any text field:
     ==word==     -> accent (#F9E400) highlight
@@ -199,6 +200,125 @@ td.code{width:100%;}
 .pill.accent{background:var(--accent);color:#0A0A0C;border-color:var(--accent);
   box-shadow:0 0 36px rgba(249,228,0,.32);}
 .pill .mut{color:var(--dim);}
+
+/* ========================================================================
+   SIGNATURE PROGRESS RAIL  (segmented terminal/loading bar in the footer)
+   ======================================================================== */
+.foot-wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:22px;}
+.prog{display:flex;gap:8px;align-items:center;height:7px;}
+.prog .seg{flex:1;height:3px;border-radius:3px;background:var(--line);}
+.prog .seg.done{background:rgba(249,228,0,.42);}
+.prog .seg.cur{height:7px;background:var(--accent);box-shadow:0 0 16px rgba(249,228,0,.7);}
+
+/* ========================================================================
+   FONT EFFECTS  (opt-in, used sparingly)
+   ======================================================================== */
+.gradtext{background:linear-gradient(118deg,var(--accent) 0%,#FFF6B0 46%,var(--ink) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+/* subtle CRT scanline on hero slides */
+.slide.hero::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;z-index:1;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.014) 0 1px,transparent 1px 4px);}
+
+/* ========================================================================
+   COMPARE  (two-column A vs B — no code needed)
+   ======================================================================== */
+.cmp{display:flex;gap:24px;margin-top:42px;}
+.cmp .col{flex:1;border:1px solid var(--line);border-radius:16px;background:var(--bg-soft);
+  padding:32px 28px;display:flex;flex-direction:column;}
+.cmp .col.win{border-color:rgba(249,228,0,.5);box-shadow:0 0 44px rgba(249,228,0,.12);
+  background:linear-gradient(180deg,rgba(249,228,0,.05),var(--bg-soft));}
+.cmp .clabel{font-family:var(--mono);font-weight:700;font-size:22px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:24px;}
+.cmp .col.win .clabel{color:var(--accent);text-shadow:0 0 18px rgba(249,228,0,.4);}
+.cmp .citem{font-family:var(--disp);font-size:28px;line-height:1.32;color:var(--ink);
+  padding:14px 0;border-top:1px solid var(--line-soft);display:flex;gap:14px;align-items:flex-start;}
+.cmp .citem:first-of-type{border-top:none;padding-top:0;}
+.cmp .citem .mk{font-family:var(--mono);font-size:24px;flex-shrink:0;line-height:1.4;}
+.cmp .col .mk{color:var(--red);} .cmp .col.win .mk{color:var(--green);}
+.cmp .col.neutral .mk{color:var(--dim);} .cmp .col.win.neutral .mk{color:var(--accent);}
+
+/* ========================================================================
+   STEPS  (numbered process with connector spine)
+   ======================================================================== */
+.steps{margin-top:40px;display:flex;flex-direction:column;}
+.step{display:flex;gap:26px;padding:16px 0;position:relative;}
+.step::before{content:"";position:absolute;left:27px;top:62px;bottom:-4px;width:1px;background:var(--line);}
+.step:last-child::before{display:none;}
+.step .sn{font-family:var(--mono);font-weight:700;font-size:25px;color:var(--accent);
+  min-width:54px;height:54px;border:1px solid rgba(249,228,0,.35);border-radius:13px;
+  display:flex;align-items:center;justify-content:center;background:var(--accent-soft);
+  text-shadow:0 0 14px rgba(249,228,0,.3);flex-shrink:0;z-index:1;}
+.step .stxt{padding-top:5px;}
+.step .st{font-family:var(--disp);font-weight:600;font-size:34px;line-height:1.22;color:var(--ink);}
+.step .ss{font-family:var(--disp);font-weight:400;font-size:26px;color:var(--dim);
+  margin-top:7px;line-height:1.36;}
+
+/* ========================================================================
+   PROMPT  (AI prompt showcase — the killer slide for AI content)
+   ======================================================================== */
+.pbox{margin-top:38px;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  background:var(--bg-soft);box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.pbar{display:flex;align-items:center;gap:12px;padding:18px 24px;background:var(--bg-bar);
+  border-bottom:1px solid var(--line);}
+.pbar .ptag{font-family:var(--mono);font-weight:700;font-size:19px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);text-shadow:0 0 16px rgba(249,228,0,.35);}
+.pbar .pname{font-family:var(--mono);font-size:21px;color:var(--dim);margin-left:auto;}
+.ptext{padding:32px 28px;font-family:var(--mono);font-size:27px;line-height:1.58;
+  color:var(--ink);white-space:pre-wrap;}
+.ptext .vr{color:var(--accent);}
+
+/* ========================================================================
+   STAT  (one giant metric)
+   ======================================================================== */
+.stat{display:flex;flex-direction:column;align-items:flex-start;}
+.stat .sv{font-family:var(--disp);font-weight:700;font-size:210px;line-height:.9;
+  letter-spacing:-.045em;color:var(--accent);text-shadow:0 0 60px rgba(249,228,0,.35);}
+.stat .sv.outline{color:transparent;-webkit-text-stroke:3px var(--accent);text-shadow:none;}
+.stat .sl{font-family:var(--disp);font-weight:600;font-size:50px;line-height:1.1;
+  color:var(--ink);margin-top:14px;max-width:860px;letter-spacing:-.015em;}
+.stat .ssub{font-family:var(--disp);font-weight:400;font-size:30px;color:var(--dim);
+  margin-top:22px;max-width:820px;line-height:1.4;}
+
+/* ========================================================================
+   TOOL  (featured tool card — for AI-tool roundups)
+   ======================================================================== */
+.tool{margin-top:30px;border:1px solid var(--line);border-radius:18px;
+  background:linear-gradient(180deg,var(--bg-soft),#0c0c10);padding:42px 38px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.tool .thead{display:flex;align-items:center;gap:18px;}
+.tool .tnum{font-family:var(--mono);font-weight:700;font-size:24px;color:#0A0A0C;
+  background:var(--accent);border-radius:10px;padding:8px 15px;box-shadow:0 0 28px rgba(249,228,0,.4);}
+.tool .tname{font-family:var(--disp);font-weight:700;font-size:54px;letter-spacing:-.02em;color:var(--ink);}
+.tool .ttag{font-family:var(--mono);font-size:24px;color:var(--dim);margin-top:8px;}
+.tool .tpts{margin-top:28px;display:flex;flex-direction:column;gap:18px;}
+.tool .tpt{font-family:var(--disp);font-size:30px;line-height:1.32;color:var(--ink);
+  display:flex;gap:14px;align-items:flex-start;}
+.tool .tpt .b{color:var(--accent);font-family:var(--mono);flex-shrink:0;}
+.tool .turl{font-family:var(--mono);font-size:22px;color:var(--accent);margin-top:28px;
+  text-shadow:0 0 16px rgba(249,228,0,.3);}
+
+/* ========================================================================
+   TERMINAL  (command + output session — CLI hacks)
+   ======================================================================== */
+.term{margin-top:32px;}
+.term .winbody{padding:28px 26px 30px 26px;}
+.tline{font-family:var(--mono);font-size:25px;line-height:1.62;white-space:pre-wrap;word-break:break-word;}
+.tline .tp{color:var(--accent);}
+.tline.cmd{color:var(--ink);}
+.tline.out{color:var(--dim);}
+.tline.cmt{color:var(--faint);font-style:italic;}
+.tline.ok{color:var(--green);}
+
+/* ========================================================================
+   QUOTE  (pull-quote / hot take — engagement driver)
+   ======================================================================== */
+.quote{position:relative;margin-top:18px;}
+.quote .qm{font-family:var(--disp);font-weight:700;font-size:130px;color:var(--accent);
+  opacity:.22;line-height:.55;}
+.quote .qt{font-family:var(--disp);font-weight:600;font-size:56px;line-height:1.18;
+  letter-spacing:-.02em;color:var(--ink);margin-top:-8px;}
+.quote .qa{font-family:var(--mono);font-size:24px;color:var(--dim);margin-top:32px;}
+.quote .qa::before{content:"\\2014\\00a0";}
 """
 
 # ----------------------------------------------------------------------------
@@ -268,14 +388,16 @@ def render_hook(s):
     prompt = (f'<div class="prompt">{PROMPT}<span class="cmd">{mk(s.get("cmd",""))}</span>'
               f'<span class="cursor"></span></div>')
     sub = f'<div class="body-text" style="margin-top:34px;">{mk(s["sub"])}</div>' if s.get("sub") else ""
+    hcls = "hook gradtext" if s.get("grad") else "hook"
     inner = (f'{prompt}{kicker}'
-             f'<div class="hook" style="font-size:{fs}px;">{mkd(s["title"])}</div>{sub}')
+             f'<div class="{hcls}" style="font-size:{fs}px;">{mkd(s["title"])}</div>{sub}')
     return inner, "mid", True
 
 def render_text(s):
     """text/statement: {kicker?, title, body?}  (use type 'statement' for big centered)"""
     kicker = f'<div class="kicker">{mk(s["kicker"])}</div>' if s.get("kicker") else ""
     cls = "statement" if s.get("type") == "statement" else "h-title"
+    if s.get("grad"): cls += " gradtext"
     body = f'<div class="body-text">{mk(s["body"])}</div>' if s.get("body") else ""
     align = "mid" if s.get("type") == "statement" else "top"
     inner = f'{kicker}<div class="{cls}">{mkd(s["title"])}</div>{body}'
@@ -338,9 +460,125 @@ def render_cta(s):
             f'</div>')
     return card, "mid", True
 
+# ----------------------------------------------------------------------------
+# extended slide renderers (broader niche: AI tools / dev hacks / tech)
+# ----------------------------------------------------------------------------
+def _kt(s, title_size=None):
+    """shared kicker + optional title block."""
+    kicker = f'<div class="kicker">{mk(s["kicker"])}</div>' if s.get("kicker") else ""
+    if s.get("title"):
+        st = f' style="font-size:{title_size}px;"' if title_size else ""
+        title = f'<div class="h-title"{st}>{mkd(s["title"])}</div>'
+    else:
+        title = ""
+    return kicker, title
+
+def render_compare(s):
+    """compare: {kicker?, title?, left:{label,items}, right:{label,items}, winner?('left'|'right'), neutral?}"""
+    kicker, title = _kt(s, title_size=48)
+    winner = s.get("winner", "right")
+    neutral = s.get("neutral", False)
+    def col(side, data):
+        is_win = (side == winner)
+        cls = "col" + (" win" if is_win else "") + (" neutral" if neutral else "")
+        label = f'<div class="clabel">{mk(data.get("label",""))}</div>'
+        if neutral:
+            mark = "&#9656;"
+        else:
+            mark = "&#10003;" if is_win else "&#10007;"
+        items = "".join(
+            f'<div class="citem"><span class="mk">{mark}</span><span>{mkd(it)}</span></div>'
+            for it in data.get("items", [])
+        )
+        return f'<div class="{cls}">{label}{items}</div>'
+    body = f'<div class="cmp">{col("left", s["left"])}{col("right", s["right"])}</div>'
+    return f'{kicker}{title}{body}', "top", False
+
+def render_steps(s):
+    """steps: {kicker?, title?, steps:[str | {t, sub?}]}"""
+    kicker, title = _kt(s)
+    rows = []
+    for i, it in enumerate(s["steps"], 1):
+        if isinstance(it, dict):
+            sub = f'<div class="ss">{mk(it.get("sub",""))}</div>' if it.get("sub") else ""
+            t = f'<div class="st">{mkd(it["t"])}</div>'
+        else:
+            sub, t = "", f'<div class="st">{mkd(it)}</div>'
+        rows.append(f'<div class="step"><div class="sn">{i:02d}</div><div class="stxt">{t}{sub}</div></div>')
+    return f'{kicker}{title}<div class="steps">{"".join(rows)}</div>', "top", False
+
+def render_prompt(s):
+    """prompt: {kicker?, title?, prompt, label?, tool?, note?}  — {vars} render in accent"""
+    kicker, title = _kt(s)
+    ptext = html.escape(s["prompt"])
+    ptext = re.sub(r"\{([^}]+)\}", r'<span class="vr">{\1}</span>', ptext)
+    tag = html.escape(s.get("label", "PROMPT"))
+    name = f'<span class="pname">{html.escape(s["tool"])}</span>' if s.get("tool") else ""
+    note = f'<div class="body-text" style="font-size:28px;margin-top:24px;">{mk(s["note"])}</div>' if s.get("note") else ""
+    box = (f'<div class="pbox"><div class="pbar"><span class="ptag">{tag}</span>{name}</div>'
+           f'<div class="ptext">{ptext}</div></div>')
+    return f'{kicker}{title}{box}{note}', "top", False
+
+def render_stat(s):
+    """stat: {kicker?, value, label, sub?, outline?, grad?}"""
+    kicker = f'<div class="kicker">{mk(s["kicker"])}</div>' if s.get("kicker") else ""
+    vcls = "sv"
+    if s.get("outline"): vcls += " outline"
+    if s.get("grad"):    vcls += " gradtext"
+    sub = f'<div class="ssub">{mk(s["sub"])}</div>' if s.get("sub") else ""
+    inner = (f'{kicker}<div class="stat"><div class="{vcls}">{mkd(s["value"])}</div>'
+             f'<div class="sl">{mkd(s["label"])}</div>{sub}</div>')
+    return inner, "mid", True
+
+def render_tool(s):
+    """tool: {kicker?, title?, num?, name, tagline?, points:[...], url?}"""
+    kicker, title = _kt(s)
+    num = f'<span class="tnum">{html.escape(str(s["num"]))}</span>' if s.get("num") else ""
+    tag = f'<div class="ttag">{mk(s["tagline"])}</div>' if s.get("tagline") else ""
+    pts = "".join(
+        f'<div class="tpt"><span class="b">&#9656;</span><span>{mkd(p)}</span></div>'
+        for p in s.get("points", [])
+    )
+    url = f'<div class="turl">&#8599; {html.escape(s["url"])}</div>' if s.get("url") else ""
+    card = (f'<div class="tool"><div class="thead">{num}<div>'
+            f'<div class="tname">{mkd(s["name"])}</div>{tag}</div></div>'
+            f'<div class="tpts">{pts}</div>{url}</div>')
+    return f'{kicker}{title}{card}', "top", False
+
+def render_terminal(s):
+    """terminal: {kicker?, title?, name?, lines:[{cmd}|{out}|{ok}|{comment}]}"""
+    kicker, title = _kt(s)
+    name = html.escape(s.get("name", "bash"))
+    rows = []
+    for ln in s["lines"]:
+        if "cmd" in ln:
+            rows.append(f'<div class="tline cmd"><span class="tp">$</span> {html.escape(ln["cmd"])}</div>')
+        elif "ok" in ln:
+            rows.append(f'<div class="tline ok">{html.escape(ln["ok"])}</div>')
+        elif "out" in ln:
+            rows.append(f'<div class="tline out">{html.escape(ln["out"])}</div>')
+        elif "comment" in ln:
+            rows.append(f'<div class="tline cmt"># {html.escape(ln["comment"])}</div>')
+    win = (f'<div class="win term"><div class="winbar">'
+           f'<span class="dot r"></span><span class="dot a"></span><span class="dot g"></span>'
+           f'<span class="winname">{name}</span></div>'
+           f'<div class="winbody">{"".join(rows)}</div></div>')
+    return f'{kicker}{title}{win}', "top", False
+
+def render_quote(s):
+    """quote: {kicker?, quote, attribution?}"""
+    kicker = f'<div class="kicker">{mk(s["kicker"])}</div>' if s.get("kicker") else ""
+    attr = f'<div class="qa">{mk(s["attribution"])}</div>' if s.get("attribution") else ""
+    inner = (f'{kicker}<div class="quote"><div class="qm">&ldquo;</div>'
+             f'<div class="qt">{mkd(s["quote"])}</div>{attr}</div>')
+    return inner, "mid", False
+
+
 RENDERERS = {
     "hook": render_hook, "text": render_text, "statement": render_text,
     "recap": render_recap, "list": render_list, "code": render_code, "cta": render_cta,
+    "compare": render_compare, "steps": render_steps, "prompt": render_prompt,
+    "stat": render_stat, "tool": render_tool, "terminal": render_terminal, "quote": render_quote,
 }
 
 # ----------------------------------------------------------------------------
@@ -355,11 +593,20 @@ def build_slide_html(slide, idx, total, cfg):
     brand = f'<span class="brand">~/<b>{html.escape(handle.lstrip("@"))}</b></span>'
     count = f'<span class="count">[{idx:02d}/{total:02d}]</span>'
     last = idx == total
+    # signature segmented progress rail
     if last:
-        foot = '<div class="foot center"><span class="h">' + html.escape(cfg.get("site","majdst.codes")) + '</span></div>'
+        rail_segs = "".join('<span class="seg done"></span>' for _ in range(total))
+        meta = ('<div class="foot center"><span class="h">'
+                + html.escape(cfg.get("site", "majdst.codes")) + '</span></div>')
     else:
-        foot = (f'<div class="foot"><span class="h">{html.escape(handle)}</span>'
+        cells = []
+        for k in range(1, total + 1):
+            c = "seg done" if k < idx else ("seg cur" if k == idx else "seg")
+            cells.append(f'<span class="{c}"></span>')
+        rail_segs = "".join(cells)
+        meta = (f'<div class="foot"><span class="h">{html.escape(handle)}</span>'
                 f'<span class="swipe">swipe<i>&rarr;</i></span></div>')
+    foot = f'<div class="foot-wrap">{meta}<div class="prog">{rail_segs}</div></div>'
     slide_cls = "slide hero" if hero else "slide"
     body = f'<div class="body {align}">{inner}</div>'
     return (f'<div class="{slide_cls}">'
